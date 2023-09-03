@@ -14,7 +14,7 @@ private:
 public:
   WiFiReceiver(uint8_t cePin, uint8_t csnPin) : radio(cePin, csnPin) {}
 
-  void begin() {
+  void setup() {
     radio.begin();
     radio.openReadingPipe(0, address);
     radio.setPALevel(RF24_PA_MIN);
@@ -25,8 +25,11 @@ public:
     return radio.available();
   }
 
-  void readMessage(char* text, size_t size) {
-    radio.read(text, size);
+  String readMessage() { 
+    char message[32];
+    radio.read(&message, sizeof(message));
+    
+    return message;
   }
 };
 
