@@ -21,18 +21,10 @@ private:
   Puce puceId;
   Chrono pulseClock;
 
-public:
-  IRSender(int pin, Puce puce) {
-    this->irPin = pin;
-    this->puceId = puce;
-  }
-
-  void begin() {
-    pinMode(irPin, OUTPUT);
-  }
 
   void sendPulse(long microsecs) {
     pulseClock.restart();
+
     while (!pulseClock.hasPassed(microsecs, false)) {
       digitalWrite(irPin, HIGH);
       delayMicroseconds(9);
@@ -41,6 +33,17 @@ public:
     }
   }
 
+public:
+  IRSender(int pin, Puce puce) {
+    this->irPin = pin;
+    this->puceId = puce;
+
+    pulseClock = Chrono(Chrono::MICROS);
+  }
+
+  void begin() {
+    pinMode(irPin, OUTPUT);
+  }
 
   void sendSignal() {
     sendPulse(SIGNAL_HIGH_TIME_MCS);
@@ -60,6 +63,20 @@ public:
       break;
     default:
       break;
+    }
+  }
+
+  unsigned long previousMillis = 0;
+  const unsigned long interval = 2000;
+
+  void sendPulseSignal() {
+    unsigned long currentMillis = millis();
+
+    if (currentMillis - previousMillis >= interval) {
+      for (int i = 0; i < 20; i++)
+        sendSignal();
+
+      previousMillis = currentMillis;
     }
   }
 };

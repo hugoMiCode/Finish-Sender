@@ -17,8 +17,9 @@ void setup() {
   wifiReceiver.setup();
 }
 
+
 void loop() {
-  irSender.sendSignal();
+  irSender.sendPulseSignal();
 
   if (wifiReceiver.available()) {
     String message = wifiReceiver.readMessage();
