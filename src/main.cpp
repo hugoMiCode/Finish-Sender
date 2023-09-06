@@ -1,25 +1,24 @@
 #include "IRSender.h"
 #include "WifiReceiver.h"
 
-// utiliser des define
-const int irPin = 2;
-const int wifiCePin = 7;
-const int wifiCsnPin = 8;
+#define IR_SENDER_PIN 2
+#define WIFI_CE_PIN 7
+#define WIFI_CSN_PIN 8
 
 
-IRSender irSender(irPin);
-WiFiReceiver wifiReceiver(wifiCePin, wifiCsnPin);
+IRSender irSender(IR_SENDER_PIN, Puce::Finish);
+WiFiReceiver wifiReceiver(WIFI_CE_PIN, WIFI_CSN_PIN);
 
 
 void setup() {
   Serial.begin(115200);
 
   irSender.begin();
-  wifiReceiver.setup(); // probleme ca empeche de faire fonctionner blink (LED_BUILTIN) => SDK sur le pin 13 = LED_BUILTIN
+  wifiReceiver.setup();
 }
 
 void loop() {
-  irSender.sendSignal(1); // Replace with the desired puceId 
+  irSender.sendSignal();
 
   if (wifiReceiver.available()) {
     String message = wifiReceiver.readMessage();
