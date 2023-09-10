@@ -6,20 +6,20 @@
 #define WIFI_CSN_PIN 8
 
 
-IRSender irSender(IR_SENDER_PIN, Puce::Finish);
+IRSender irSender(IR_SENDER_PIN, 0b00);
 WiFiReceiver wifiReceiver(WIFI_CE_PIN, WIFI_CSN_PIN);
 
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(250000);
 
-  irSender.begin();
+  irSender.setup();
   wifiReceiver.setup();
 }
 
 
 void loop() {
-  irSender.sendPulseSignal();
+  irSender.sendPulseSignal(1500);
 
   if (wifiReceiver.available()) {
     String message = wifiReceiver.readMessage();
